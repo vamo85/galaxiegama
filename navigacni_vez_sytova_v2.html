@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <title>Navigační věž Sytová</title>
+  <style>
+    body {
+      background-color: #0b0f0f;
+      color: #00ffcc;
+      font-family: 'Courier New', Courier, monospace;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    h1 {
+      text-shadow: 0 0 8px #00ffcc;
+    }
+    .container {
+      background-color: rgba(0, 255, 204, 0.1);
+      padding: 20px;
+      border-radius: 10px;
+      border: 2px solid #00ffcc;
+      text-align: center;
+      max-width: 600px;
+    }
+    input[type="text"] {
+      width: 80%;
+      padding: 10px;
+      font-size: 16px;
+      margin-bottom: 10px;
+      border: 1px solid #00ffcc;
+      background-color: #001111;
+      color: #00ffcc;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 5px;
+      background-color: #00ffcc;
+      color: black;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:disabled {
+      background-color: #004d40;
+      cursor: not-allowed;
+    }
+    #output {
+      margin-top: 15px;
+      min-height: 40px;
+    }
+    .blink {
+      animation: blinker 0.2s linear 3;
+    }
+    @keyframes blinker {
+      50% { background-color: red; }
+    }
+    a.button-link {
+      display: inline-block;
+      margin-top: 15px;
+      padding: 10px 20px;
+      background-color: #00ffcc;
+      color: black;
+      text-decoration: none;
+      font-weight: bold;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="mainContainer">
+    <h1>Navigační věž Sytová</h1>
+    <p>Zadejte heslo pro přístup do administrátorského rozhraní.</p>
+    <input type="text" id="codeInput" placeholder="Zadejte heslo">
+    <button onclick="verifyCode()">Odeslat</button>
+    <div id="output"></div>
+  </div>
+
+  <audio id="errorSound" src="https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg"></audio>
+  <audio id="successSound" src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg"></audio>
+
+  <script>
+    const passcode = "GALAXIE".toUpperCase();
+
+    function verifyCode() {
+      const input = document.getElementById("codeInput").value.trim().toUpperCase();
+      const container = document.getElementById("mainContainer");
+      const output = document.getElementById("output");
+
+      if (input === passcode) {
+        document.getElementById("successSound").play();
+        output.innerHTML = `
+          <p>Přístup udělen.</p>
+          <button disabled>Zahájit vysílání signálu pro invazi</button>
+          <button onclick="deactivate()">Deaktivovat zařízení</button>
+          <div id="deactivationStatus"></div>
+        `;
+      } else {
+        container.classList.add("blink");
+        document.getElementById("errorSound").play();
+        output.innerHTML = `<p style='color: red;'>Nesprávné heslo. Přístup odepřen.</p>`;
+        setTimeout(() => {
+          container.classList.remove("blink");
+        }, 600);
+      }
+    }
+
+    function deactivate() {
+      const status = document.getElementById("deactivationStatus");
+      status.innerHTML = "<p>Probíhá komunikace se zařízením...</p>";
+      setTimeout(() => {
+        status.innerHTML = `<p><strong>Zařízení deaktivováno.</strong></p>
+                            <a class='button-link' href="https://drive.google.com/file/d/1dbfU24KEfJdMReuI1bF9EbLat6g6x8yQ/view?usp=drivesdk" target="_blank">Zobrazit další instrukce</a>`;
+      }, 3000);
+    }
+  </script>
+</body>
+</html>
