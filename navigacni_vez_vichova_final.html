@@ -11,15 +11,12 @@
       text-align: center;
       padding: 20px;
     }
-    input {
+    input, button {
       padding: 10px;
       font-size: 18px;
       margin: 10px;
     }
     button {
-      padding: 10px 20px;
-      font-size: 18px;
-      margin: 10px;
       cursor: pointer;
     }
     .hidden {
@@ -28,9 +25,6 @@
     #warning {
       color: red;
       font-weight: bold;
-    }
-    #link-button {
-      margin-top: 20px;
     }
   </style>
 </head>
@@ -48,24 +42,18 @@
 
   <div id="deactivation" class="hidden">
     <p>Probíhá komunikace se zařízením...</p>
-    <audio autoplay>
-      <source src="https://www.soundjay.com/button/sounds/beep-07.mp3" type="audio/mpeg">
-    </audio>
   </div>
 
   <div id="confirmed" class="hidden">
     <h2>Zařízení deaktivováno</h2>
-    <audio autoplay>
-      <source src="https://www.soundjay.com/button/sounds/beep-09.mp3" type="audio/mpeg">
-    </audio>
-    <div id="link-button">
-      <a href="https://drive.google.com/file/d/1nyy5IDkCpksafI_q0ctyswdV0KjeRW2k/view?usp=drivesdk" target="_blank">
-        <button>Zobrazit další instrukce</button>
-      </a>
-    </div>
+    <button onclick="openInstructions()">Zobrazit další instrukce</button>
   </div>
 
   <script>
+    const errorBeep = new Audio("https://www.soundjay.com/button/beep-05.wav");
+    const startBeep = new Audio("https://www.soundjay.com/button/beep-07.wav");
+    const confirmBeep = new Audio("https://www.soundjay.com/button/beep-09.wav");
+
     function checkPassword() {
       const input = document.getElementById("passwordInput").value.toLowerCase();
       const correctPassword = "kalasnikama";
@@ -83,22 +71,24 @@
           document.body.style.backgroundColor =
             document.body.style.backgroundColor === "#300" ? "#000" : "#300";
         }, 100);
-        new Audio("https://www.soundjay.com/button/sounds/beep-05.mp3").play();
+        errorBeep.play();
       }
     }
 
     function deactivate() {
-      const options = document.getElementById("options");
-      const deactivation = document.getElementById("deactivation");
-      const confirmed = document.getElementById("confirmed");
-
-      options.classList.add("hidden");
-      deactivation.classList.remove("hidden");
+      document.getElementById("options").classList.add("hidden");
+      document.getElementById("deactivation").classList.remove("hidden");
+      startBeep.play();
 
       setTimeout(() => {
-        deactivation.classList.add("hidden");
-        confirmed.classList.remove("hidden");
+        document.getElementById("deactivation").classList.add("hidden");
+        document.getElementById("confirmed").classList.remove("hidden");
+        confirmBeep.play();
       }, 3000);
+    }
+
+    function openInstructions() {
+      window.open("https://drive.google.com/file/d/1nyy5IDkCpksafI_q0ctyswdV0KjeRW2k/view?usp=drivesdk", "_blank");
     }
   </script>
 </body>
