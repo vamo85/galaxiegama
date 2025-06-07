@@ -29,7 +29,7 @@
       color: red;
       font-weight: bold;
     }
-    #link {
+    #link-button {
       margin-top: 20px;
     }
   </style>
@@ -58,9 +58,9 @@
     <audio autoplay>
       <source src="https://www.soundjay.com/button/sounds/beep-09.mp3" type="audio/mpeg">
     </audio>
-    <div id="link">
+    <div id="link-button">
       <a href="https://drive.google.com/file/d/1nyy5IDkCpksafI_q0ctyswdV0KjeRW2k/view?usp=drivesdk" target="_blank">
-        <img src="https://drive.google.com/uc?export=view&id=1nyy5IDkCpksafI_q0ctyswdV0KjeRW2k" width="300" alt="Zobrazit další instrukce">
+        <button>Zobrazit další instrukce</button>
       </a>
     </div>
   </div>
@@ -80,7 +80,7 @@
         document.body.style.backgroundColor = "#300";
         document.title = "!! CHYBA !!";
         setInterval(() => {
-          document.body.style.backgroundColor = 
+          document.body.style.backgroundColor =
             document.body.style.backgroundColor === "#300" ? "#000" : "#300";
         }, 100);
         new Audio("https://www.soundjay.com/button/sounds/beep-05.mp3").play();
