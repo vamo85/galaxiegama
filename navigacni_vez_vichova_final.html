@@ -1,120 +1,105 @@
 <!DOCTYPE html>
 <html lang="cs">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Navigační věž Víchová</title>
   <style>
     body {
-      background-color: #0b0f0f;
-      color: #00ffcc;
-      font-family: 'Courier New', Courier, monospace;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      margin: 0;
+      background-color: #000;
+      color: #0f0;
+      font-family: 'Courier New', monospace;
+      text-align: center;
+      padding: 2em;
     }
     h1 {
-      text-shadow: 0 0 8px #00ffcc;
+      font-size: 2em;
+      margin-bottom: 1em;
     }
-    .container {
-      background-color: rgba(0, 255, 204, 0.1);
-      padding: 20px;
-      border-radius: 10px;
-      border: 2px solid #00ffcc;
-      text-align: center;
-      max-width: 600px;
-    }
-    input[type="text"] {
-      width: 80%;
-      padding: 10px;
-      font-size: 16px;
-      margin-bottom: 10px;
-      border: 1px solid #00ffcc;
-      background-color: #001111;
-      color: #00ffcc;
+    input[type="password"] {
+      padding: 0.5em;
+      font-size: 1em;
     }
     button {
-      padding: 10px 20px;
-      margin: 5px;
-      background-color: #00ffcc;
-      color: black;
-      border: none;
-      font-weight: bold;
+      padding: 0.5em 1em;
+      margin-top: 1em;
+      font-size: 1em;
       cursor: pointer;
     }
-    button:disabled {
-      background-color: #004d40;
-      cursor: not-allowed;
+    .error {
+      color: red;
+      font-weight: bold;
+      animation: blink 0.5s infinite;
     }
-    #output {
-      margin-top: 15px;
-      min-height: 40px;
+    @keyframes blink {
+      50% {
+        opacity: 0;
+      }
     }
-    .blink {
-      animation: blinker 0.2s linear 3;
+    #options {
+      display: none;
+      margin-top: 2em;
     }
-    @keyframes blinker {
-      50% { background-color: red; }
+    #result {
+      margin-top: 2em;
+    }
+    #next-instructions {
+      margin-top: 2em;
     }
     a.button-link {
-      display: inline-block;
-      margin-top: 15px;
-      padding: 10px 20px;
-      background-color: #00ffcc;
-      color: black;
+      background-color: #0f0;
+      color: #000;
       text-decoration: none;
-      font-weight: bold;
+      padding: 0.75em 1.5em;
       border-radius: 5px;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
-  <div class="container" id="mainContainer">
-    <h1>Navigační věž Víchová</h1>
-    <p>Zadejte heslo pro přístup do administrátorského rozhraní.</p>
-    <input type="text" id="codeInput" placeholder="Zadejte heslo">
-    <button onclick="verifyCode()">Odeslat</button>
-    <div id="output"></div>
+  <h1>Navigační věž Víchová</h1>
+  <p>Zadejte heslo pro přístup do administrátorského rozhraní.</p>
+  <input type="password" id="password" />
+  <br />
+  <button onclick="checkPassword()">Odemknout</button>
+  <p id="message" class="error"></p>
+
+  <div id="options">
+    <button disabled>Zahájit vysílání signálu pro invazi</button>
+    <button onclick="deactivate()">Deaktivovat zařízení</button>
   </div>
 
-  <audio id="errorSound" src="https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg"></audio>
-  <audio id="successSound" src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg"></audio>
+  <div id="result"></div>
+  <div id="next-instructions" style="display: none;">
+    <a class="button-link" href="https://drive.google.com/file/d/1nyy5IDkCpksafI_q0ctyswdV0KjeRW2k/view?usp=drivesdk" target="_blank">
+      Zobrazit další instrukce
+    </a>
+  </div>
+
+  <audio id="errorSound" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
+  <audio id="successSound" src="https://actions.google.com/sounds/v1/cartoon/cartoon_boing.ogg"></audio>
 
   <script>
-    const passcode = "KALASNIKAMA".toUpperCase();
-
-    function verifyCode() {
-      const input = document.getElementById("codeInput").value.trim().toUpperCase();
-      const container = document.getElementById("mainContainer");
-      const output = document.getElementById("output");
-
-      if (input === passcode) {
-        document.getElementById("successSound").play();
-        output.innerHTML = `
-          <p>Přístup udělen.</p>
-          <button disabled>Zahájit vysílání signálu pro invazi</button>
-          <button onclick="deactivate()">Deaktivovat zařízení</button>
-          <div id="deactivationStatus"></div>
-        `;
+    function checkPassword() {
+      const password = document.getElementById("password").value.toLowerCase();
+      const message = document.getElementById("message");
+      if (password === "kalasnikama") {
+        message.textContent = "";
+        document.getElementById("options").style.display = "block";
       } else {
-        container.classList.add("blink");
+        message.textContent = "Neplatné heslo!";
+        document.getElementById("options").style.display = "none";
         document.getElementById("errorSound").play();
-        output.innerHTML = `<p style='color: red;'>Nesprávné heslo. Přístup odepřen.</p>`;
-        setTimeout(() => {
-          container.classList.remove("blink");
-        }, 600);
       }
     }
 
     function deactivate() {
-      const status = document.getElementById("deactivationStatus");
-      status.innerHTML = "<p>Probíhá komunikace se zařízením...</p>";
+      const result = document.getElementById("result");
+      result.textContent = "Probíhá komunikace se zařízením...";
       setTimeout(() => {
-        status.innerHTML = `<p><strong>Zařízení deaktivováno.</strong></p>
-                            <a class='button-link' href="https://drive.google.com/file/d/1dYYvGHkUAZtYE8GvN4OEADN7HCTg6ras/view?usp=drivesdk" target="_blank">Zobrazit další instrukce</a>`;
-      }, 3000);
+        result.textContent = "Zařízení bylo úspěšně deaktivováno.";
+        document.getElementById("successSound").play();
+        document.getElementById("next-instructions").style.display = "block";
+      }, 2000);
     }
   </script>
 </body>
